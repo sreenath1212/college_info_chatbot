@@ -52,17 +52,16 @@ if "processing_llms" not in st.session_state:
 
 # --- Prompt Templates ---
 individual_prompt_template = PromptTemplate.from_template(
-    "You are a helpful assistant. Use the following college information internally to answer the user's question accurately , but do not mention the data or your internal processing in your response.\n\n"
+    "You are a helpful assistant. Use the following college information internally to answer the user's question accurately, but do not mention the data or your internal processing in your response.\n\n"
     "{college_details}\n\n"
     "User question:\n{user_query}\n\n"
     "Answer clearly and directly, as if you are speaking naturally to the user."
-    "dont miss any data, also dont add anything unwanted for eg: msc electronics while asking msc computer science"
 )
 
 final_prompt_template = PromptTemplate.from_template(
     "You are a helpful assistant. Here are multiple assistant responses generated internally (do not mention this to the user):\n\n"
     "{responses}\n\n"
-    "Now, combine these into a single, clear, and natural-sounding response to the original user question below.\n"
+    "Now, combine and summarize these into a single, clear, and natural-sounding response to the original user question below.\n"
     "Do not reference the data, processing, or models used. Just give a direct, friendly answer.\n\n"
     "User question:\n{original_user_query}"
 )
