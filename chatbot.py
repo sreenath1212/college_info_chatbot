@@ -47,19 +47,23 @@ if "processing_llms" not in st.session_state:
 
 # --- Prompt Templates ---
 individual_prompt_template = PromptTemplate.from_template(
-    "You are a helpful assistant. Use the following college information internally to answer the user's question accurately, but do not mention the data or your internal processing in your response.\n\n"
+    "You are a helpful assistant answering questions about colleges using the data below.\n"
+    "Please answer clearly and naturally, as if speaking to a student, but ONLY use the information in the data.\n"
+    "If the answer isn't in the data, respond politely that the information isn't available.\n\n"
     "{college_details}\n\n"
     "User question:\n{user_query}\n\n"
-    "Answer clearly and directly, as if you are speaking naturally to the user."
+    "Provide an accurate, user-friendly answer. Do not guess or make assumptions."
 )
 
 final_prompt_template = PromptTemplate.from_template(
-    "You are a helpful assistant. Here are multiple assistant responses generated internally (do not mention this to the user):\n\n"
-    "{responses}\n\n"
-    "Now, combine and summarize these into a single, clear, and natural-sounding response to the original user question below.\n"
-    "Do not reference the data, processing, or models used. Just give a direct, friendly answer.\n\n"
-    "User question:\n{original_user_query}"
+    "You are a helpful assistant. You are given several draft answers to a student's question.\n"
+    "Combine them into one clear, natural-sounding reply.\n"
+    "Only use the information present in the drafts — do not add anything extra.\n\n"
+    "Draft Responses:\n{responses}\n\n"
+    "User Question:\n{original_user_query}\n\n"
+    "Final Response (friendly and accurate):"
 )
+
 
 # --- Streamlit Chat UI ---
 st.title("🎓 College Assistant")
