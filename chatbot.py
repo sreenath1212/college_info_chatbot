@@ -47,22 +47,24 @@ if "processing_llms" not in st.session_state:
 
 # --- Prompt Templates ---
 individual_prompt_template = PromptTemplate.from_template(
-    "You are a helpful assistant answering questions about colleges using the data below.\n"
-    "Please answer clearly and naturally, as if speaking to a student, but ONLY use the information in the data.\n"
-    "If the answer isn't in the data, respond politely that the information isn't available.\n\n"
-    "{college_details}\n\n"
-    "User question:\n{user_query}\n\n"
-    "Provide an accurate, user-friendly answer. Do not guess or make assumptions."
+    "You are a helpful assistant that answers questions about colleges. Use only the college information below to respond.\n"
+    "Do not say anything about data, records, or internal information.\n"
+    "If there's no clear match, reply naturally and briefly without mentioning what wasn't found.\n\n"
+    "College Information:\n{college_details}\n\n"
+    "User's Question:\n{user_query}\n\n"
+    "Respond in a warm, friendly, and helpful tone. Be concise, and avoid discussing sources or limitations."
 )
 
+
 final_prompt_template = PromptTemplate.from_template(
-    "You are a helpful assistant. You are given several draft answers to a student's question.\n"
-    "Combine them into one clear, natural-sounding reply.\n"
-    "Only use the information present in the drafts — do not add anything extra.\n\n"
+    "You are a helpful assistant. Below are several drafts answering a user's question.\n"
+    "Summarize them into a friendly, clear response without referencing how the answers were created.\n"
+    "Avoid phrases like 'based on the data' or 'I couldn't find'.\n\n"
     "Draft Responses:\n{responses}\n\n"
-    "User Question:\n{original_user_query}\n\n"
-    "Final Response (friendly and accurate):"
+    "User's Question:\n{original_user_query}\n\n"
+    "Final Response:"
 )
+
 
 
 # --- Streamlit Chat UI ---
