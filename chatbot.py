@@ -9,7 +9,7 @@ import nest_asyncio
 nest_asyncio.apply()
 
 # --- App Config ---
-db_file = 'data/chatbot4.db'
+db_file = 'chatbot4.db'
 model_name = "llama3-70b-8192"
 num_processing_llms = 6
 
