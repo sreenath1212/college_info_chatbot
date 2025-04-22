@@ -1,7 +1,7 @@
 import streamlit as st
+import pandas as pd
 from langchain_groq.chat_models import ChatGroq
 from langchain_core.prompts import PromptTemplate
-import sqlite3
 import asyncio
 import nest_asyncio
 
@@ -9,7 +9,7 @@ import nest_asyncio
 nest_asyncio.apply()
 
 # --- App Config ---
-db_file = 'chatbot4.db'
+csv_file = 'data/college_data.csv'
 model_name = "llama3-70b-8192"
 num_processing_llms = 6
 
@@ -24,18 +24,13 @@ if not all(primary_api_keys) or len(primary_api_keys) != 7:
 if not backup_api_keys:
     st.warning("No backup GROQ API keys were provided. Failover may not work.")
 
-# --- Load Data Once ---
-def load_and_preprocess_data(db_file):
-    conn = sqlite3.connect(db_file)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM college_data")
-    rows = cursor.fetchall()
-    col_names = [desc[0] for desc in cursor.description]
-    conn.close()
-    return [dict(zip(col_names, row)) for row in rows]
+# --- Load Data Once from CSV ---
+def load_and_preprocess_data(csv_file):
+    df = pd.read_csv(csv_file)
+    return df.to_dict(orient="records")
 
 if "college_data" not in st.session_state:
-    st.session_state.college_data = load_and_preprocess_data(db_file)
+    st.session_state.college_data = load_and_preprocess_data(csv_file)
     chunk_size = len(st.session_state.college_data) // num_processing_llms
     st.session_state.data_chunks = [
         st.session_state.college_data[i * chunk_size:(i + 1) * chunk_size] for i in range(num_processing_llms - 1)
@@ -74,9 +69,10 @@ if "chat_history" not in st.session_state:
 
 # --- Async Chunk Processor ---
 async def get_chunk_info(data_chunk, llm_index, retry_count=0, backup_index=0):
+    for i, item in enumerate(data_chunk):
+        item["record_id"] = f"College-{i+1}"
     college_details_str = "\n".join(
-        f"Institution: {item.get('Institution_Name', 'Unknown')} | " +
-        ", ".join([f"{k}: {v}" for k, v in item.items() if k != 'Institution_Name']) for item in data_chunk
+        f"{item['record_id']} - " + ", ".join([f"{k}: {v}" for k, v in item.items() if k != 'record_id']) for item in data_chunk
     )
     prompt = individual_prompt_template.format(college_details=college_details_str, user_query=user_query)
     try:
