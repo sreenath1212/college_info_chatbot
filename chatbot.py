@@ -9,7 +9,7 @@ import nest_asyncio
 nest_asyncio.apply()
 
 # --- App Config ---
-csv_file = 'data/college_data.csv'
+csv_file = 'college_data.csv'
 model_name = "llama3-70b-8192"
 num_processing_llms = 6
 
