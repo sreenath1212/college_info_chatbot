@@ -9,7 +9,7 @@ import nest_asyncio
 nest_asyncio.apply()
 
 # --- App Config ---
-db_file = 'chatbot4.db'
+db_file = 'data/chatbot4.db'
 model_name = "llama3-70b-8192"
 num_processing_llms = 6
 
@@ -74,10 +74,9 @@ if "chat_history" not in st.session_state:
 
 # --- Async Chunk Processor ---
 async def get_chunk_info(data_chunk, llm_index, retry_count=0, backup_index=0):
-    for i, item in enumerate(data_chunk):
-        item["record_id"] = f"College-{i+1}"
     college_details_str = "\n".join(
-        f"{item['record_id']} - " + ", ".join([f"{k}: {v}" for k, v in item.items() if k != 'record_id']) for item in data_chunk
+        f"Institution: {item.get('Institution_Name', 'Unknown')} | " +
+        ", ".join([f"{k}: {v}" for k, v in item.items() if k != 'Institution_Name']) for item in data_chunk
     )
     prompt = individual_prompt_template.format(college_details=college_details_str, user_query=user_query)
     try:
