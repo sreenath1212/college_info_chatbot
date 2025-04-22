@@ -73,6 +73,7 @@ final_prompt_template = PromptTemplate.from_template(
     "- **Avoid guessing or repetition.**\n\n"
     "Assistant Responses:\n{responses}\n\n"
     "Final Response:"
+    "Give user friendly answers dont talk about data and all"
 )
 
 # --- Streamlit UI ---
